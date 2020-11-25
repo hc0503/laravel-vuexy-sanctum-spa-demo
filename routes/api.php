@@ -13,23 +13,29 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 Route::post('/login', 'API\Auth\AuthController@login')->name('login');
 
-Route::group(['prefix' => 'users'], function () {
-    Route::get('/', 'API\UserController@getList');
-    Route::post('create', 'API\UserController@postCreate');
-    Route::post('update/{user}', 'API\UserController@postUpdate');
-    Route::post('delete/{user}', 'API\UserController@postDelete');
-});
-Route::group(['prefix' => 'roles'], function () {
-    Route::get('/', 'API\RoleController@getList');
-    Route::post('create', 'API\RoleController@postCreate');
-    Route::post('update/{role}', 'API\RoleController@postUpdate');
-    Route::post('delete/{role}', 'API\RoleController@postDelete');
-});
+
+
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('logout', 'API\Auth\AuthController@getLogout');
+    Route::get('permissions', 'API\PermissionController@getList');
+
+    Route::group(['prefix' => 'roles'], function () {
+        Route::get('/', 'API\RoleController@getList');
+        Route::post('create', 'API\RoleController@postCreate');
+        Route::get('detail/{role}', 'API\RoleController@getDetail');
+        Route::post('update/{role}', 'API\RoleController@postUpdate');
+        Route::post('delete/{role}', 'API\RoleController@postDelete');
+    });
+
+    Route::group(['prefix' => 'users'], function () {
+        Route::get('/', 'API\UserController@getList')->middleware('permission:viewuser');
+        Route::post('create', 'API\UserController@postCreate')->middleware('permission:createuser');
+        Route::get('detail/{user}', 'API\UserController@getDetail')->middleware('permission:viewuser');
+        Route::post('update/{user}', 'API\UserController@postUpdate')->middleware('permission:edituser');
+        Route::post('delete/{user}', 'API\UserController@postDelete')->middleware('permission:deleteuser');
+    });
 });

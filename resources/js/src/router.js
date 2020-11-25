@@ -93,6 +93,60 @@ const router = new Router({
           }
         },
         {
+          path: '/roles',
+          name: 'roles-list',
+          component: () => import('./views/roles/RoleList.vue'),
+          meta: {
+            rule: 'editor',
+            no_scroll: true
+          },
+        },
+        {
+          path: '/roles/create',
+          name: 'roles-create',
+          component: () => import('./views/roles/RoleCreate.vue'),
+          meta: {
+            rule: 'editor',
+            no_scroll: true
+          },
+        },
+        {
+          path: '/roles/detail/:roleId',
+          name: 'roles-edit',
+          component: () => import('./views/roles/RoleEdit.vue'),
+          meta: {
+            rule: 'editor',
+            no_scroll: true
+          },
+        },
+        {
+          path: '/users',
+          name: 'users-list',
+          component: () => import('./views/users/UserList.vue'),
+          meta: {
+            rule: 'editor',
+            no_scroll: true
+          },
+        },
+        {
+          path: '/users/create',
+          name: 'users-create',
+          component: () => import('./views/users/UserCreate.vue'),
+          meta: {
+            rule: 'editor',
+            no_scroll: true
+          },
+        },
+        {
+          path: '/users/detail/:userId',
+          name: 'users-edit',
+          component: () => import('./views/users/UserEdit.vue'),
+          meta: {
+            rule: 'editor',
+            no_scroll: true
+          },
+        },
+        {
           path: '/apps/email',
           redirect: '/apps/email/inbox',
           name: 'email'
@@ -1366,45 +1420,43 @@ const router = new Router({
 
 router.afterEach(() => {
   // Remove initial loading
-  const appLoading = document.getElementById('loading-bg')
-  if (appLoading) {
-    appLoading.style.display = 'none'
-  }
-})
-
-router.beforeEach((to, from, next) => {
-  firebase.auth().onAuthStateChanged(() => {
-
-    // get firebase current user
-    const firebaseCurrentUser = firebase.auth().currentUser
-
-    // if (
-    //     to.path === "/pages/login" ||
-    //     to.path === "/pages/forgot-password" ||
-    //     to.path === "/pages/error-404" ||
-    //     to.path === "/pages/error-500" ||
-    //     to.path === "/pages/register" ||
-    //     to.path === "/callback" ||
-    //     to.path === "/pages/comingsoon" ||
-    //     (auth.isAuthenticated() || firebaseCurrentUser)
-    // ) {
-    //     return next();
-    // }
-
-    // If auth required, check login. If login fails redirect to login page
-    if (to.meta.authRequired) {
-      if (!(auth.isAuthenticated() || firebaseCurrentUser)) {
-        router.push({ path: '/pages/login', query: { to: to.path } })
-      }
+    const appLoading = document.getElementById('loading-bg')
+    if (appLoading) {
+        appLoading.style.display = "none";
     }
-
-    return next()
-    // Specify the current path as the customState parameter, meaning it
-    // will be returned to the application after auth
-    // auth.login({ target: to.path });
-
-  })
-
+})
+// Creates a `nextMiddleware()` function which not only
+// runs the default `next()` callback but also triggers
+// the subsequent Middleware function.
+function nextFactory(context, middleware, index) {
+    const subsequentMiddleware = middleware[index];
+    // If no subsequent Middleware exists,
+    // the default `next()` callback is returned.
+    if (!subsequentMiddleware) return context.next;
+    return (...parameters) => {
+        // Run the default Vue Router `next()` callback first.
+        context.next(...parameters);
+        // Than run the subsequent Middleware with a new
+        // `nextMiddleware()` callback.
+        const nextMiddleware = nextFactory(context, middleware, index + 1);
+        subsequentMiddleware({ ...context, next: nextMiddleware });
+    };
+}
+router.beforeEach((to, from, next) => {
+    if (to.meta.middleware) {
+        const middleware = Array.isArray(to.meta.middleware)
+            ? to.meta.middleware
+            : [to.meta.middleware];
+        const context = {
+            from,
+            next,
+            router,
+            to,
+        };
+        const nextMiddleware = nextFactory(context, middleware, 1);
+        return middleware[0]({ ...context, next: nextMiddleware });
+    }
+    return next();
 })
 
 export default router
