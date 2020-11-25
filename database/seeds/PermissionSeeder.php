@@ -15,15 +15,19 @@ class PermissionSeeder extends Seeder
         Permission::query()->truncate();
         Permission::create([
             'name' => 'viewuser',
+            // 'guard_name' => 'sanctum'
         ]);
         Permission::create([
             'name' => 'createuser',
+            // 'guard_name' => 'sanctum'
         ]);
         Permission::create([
-            'name' => 'updateuser',
+            'name' => 'edituser',
+            // 'guard_name' => 'sanctum'
         ]);
         Permission::create([
             'name' => 'deleteuser',
+            // 'guard_name' => 'sanctum'
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
@@ -12,9 +13,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        User::query()->truncate();
         $user = factory(User::class)->create([
-            'name' => 'SuperAdmin',
+            'name' => 'Super Admin',
             'email' => 'admin@admin.com',
         ]);
+
+        $user->assignRole('SuperAdmin');
     }
 }
