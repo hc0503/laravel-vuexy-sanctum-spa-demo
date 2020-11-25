@@ -24,12 +24,16 @@ class AuthController extends Controller
         $user = User::where('email', "$request->email")->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(null, 401);
+            return response()->json([
+                'errors' => [
+                    'email' => trans('auth.failed')
+                ]
+            ]);
         }
 
         return response()->json([
-            'token' => $user->createToken('token', ['user:token'])->plainTextToken,
-            'user_info' => $user
+            'accessToken' => $user->createToken('token', ['user:token'])->plainTextToken,
+            'userData' => $user
         ]);
     }
 

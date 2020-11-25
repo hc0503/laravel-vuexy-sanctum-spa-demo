@@ -22,6 +22,16 @@ class RoleController extends Controller
 
     /**
      * @param \Illuminate\Http\Request  $request
+     * @param \App\Models\Role  $role
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getDetail(Request $request, Role $role)
+    {
+        return new RoleResource($role);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function postCreate(Request $request)
@@ -30,8 +40,11 @@ class RoleController extends Controller
             'name' => 'required|string|max:191'
         ]);
 
-        $role = Role::create(['name' => $request->name])
-            ->givePermissionTo($request->permissions);
+        $role = Role::create([
+            'name' => $request->name,
+            'guard_name' => 'web'
+        ])
+        ->givePermissionTo($request->permissions);
         
         return new RoleResource($role);
     }
@@ -43,8 +56,18 @@ class RoleController extends Controller
      */
     public function postUpdate(Request $request, Role $role)
     {
-        $role->update(['name' => $request->name])
-            ->givePermissionTo($request->permissions);
+        $this->validate($request, [
+            'name' => 'required|string|max:191'
+        ]);
+
+        $role->update([
+            'name' => $request->name,
+            'guard_name' => 'web'
+        ]);
+        $permissions = $request->permissions ?? [];
+        $role->syncPermissions($permissions);
+
+        return new RoleResource($role);
     }
 
     /**
@@ -54,10 +77,10 @@ class RoleController extends Controller
      */
     public function postDelete(Request $request, Role $role)
     {
-        $role->delete();
-
+        $result = $role->delete();
+        
         return response()->json([
-            'status' => 'success'
+            'success' => $result
         ]);
     }
 }

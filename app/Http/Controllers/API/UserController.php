@@ -22,18 +22,33 @@ class UserController extends Controller
 
     /**
      * @param \Illuminate\Http\Request  $request
+     * @param \App\Models\User  $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getDetail(Request $request, User $user)
+    {
+        return new UserResource($user);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function postCreate(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:191'
+            'name' => 'required|string|max:191',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required',
+            'confirm_password' => 'required|same:password'
         ]);
         $user = User::create([
             'email' => $request->email,
             'name' => $request->name,
-            'password' => $request->password
+            'password' => $request->password,
+            'status' => $request->status,
         ]);
+        $user->assignRole($request->roles['name']);
         
         return new UserResource($user);
     }
@@ -62,10 +77,10 @@ class UserController extends Controller
      */
     public function postDelete(Request $request, User $user)
     {
-        $user->delete();
+        $result = $user->delete();
 
         return response()->json([
-            'status' => 'success'
+            'success' => $result
         ]);
     }
 }
