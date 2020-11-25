@@ -1,9 +1,22 @@
 // axios
 import axios from 'axios'
 
-const baseURL = ''
+const baseURL = 'http://localhost:8000'
 
-export default axios.create({
+const instance = axios.create({
   baseURL
-  // You can add your headers here
-})
+});
+instance.interceptors.request.use(
+  config => {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+          config.headers['Authorization'] = 'Bearer ' + token;
+      }
+      config.headers['Content-Type'] = 'application/json';
+      return config;
+  },
+  error => {
+      Promise.reject(error)
+  })
+
+export default instance;
