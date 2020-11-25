@@ -13,6 +13,7 @@ import jwt from '../../http/requests/auth/jwt/index.js'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import router from '@/router'
+import axios from '../../axios.js'
 
 export default {
   loginAttempt ({ dispatch }, payload) {
@@ -301,10 +302,14 @@ export default {
 
   // JWT
   loginJWT ({ commit }, payload) {
+    const { email, password, checkbox_remember_me } = payload.userDetails
 
     return new Promise((resolve, reject) => {
-      jwt.login(payload.userDetails.email, payload.userDetails.password)
-        .then(response => {
+      axios.post('/api/login', {
+        email: email,
+        password: password,
+        checkbox_remember_me: checkbox_remember_me
+      }).then(response => {
 
           // If there's user data in response
           if (response.data.userData) {
@@ -329,6 +334,31 @@ export default {
         .catch(error => { reject(error) })
     })
   },
+  
+  logoutJWT ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      if (!localStorage.getItem(`accessToken`) || !localStorage.getItem(`userInfo`)) {
+        window.localStorage.clear();
+        return router.push({ name: `login` });
+      }
+      console.log('CONSOLE')
+      axios.get('/api/logout')
+        .then(response => {
+          console.log('Success')
+            window.localStorage.clear()
+            router.push('/pages/login').catch(() => {})
+            console.log('Success')
+            resolve(response)
+        })
+        .catch(error => {
+            console.log('Failed')
+            window.localStorage.clear()
+            router.push('/pages/login').catch(() => {})
+            reject(error)
+        })
+    })
+  },
+
   registerUserJWT ({ commit }, payload) {
 
     const { displayName, email, password, confirmPassword } = payload.userDetails
