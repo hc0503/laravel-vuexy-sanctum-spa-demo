@@ -50,6 +50,26 @@ export default [
     ]
   },
   {
+    url: null,
+    name: 'User Management',
+    icon: 'UserIcon',
+    i18n: 'User Management',
+    submenu: [
+      {
+        url: '/roles',
+        name: 'Roles',
+        slug: 'roles',
+        i18n: 'Roles'
+      },
+      {
+        url: '/users',
+        name: 'Users',
+        slug: 'users',
+        i18n: 'Users'
+      }
+    ]
+  },
+  {
     header: 'Apps',
     icon: 'PackageIcon',
     i18n: 'Apps',
