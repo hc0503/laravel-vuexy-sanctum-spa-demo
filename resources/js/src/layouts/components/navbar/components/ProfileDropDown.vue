@@ -1,8 +1,8 @@
 <template>
-  <div class="the-navbar__user-meta flex items-center" v-if="activeUserInfo.displayName">
+  <div class="the-navbar__user-meta flex items-center" v-if="activeUserInfo.name">
 
     <div class="text-right leading-tight hidden sm:block">
-      <p class="font-semibold">{{ activeUserInfo.displayName }}</p>
+      <p class="font-semibold">{{ activeUserInfo.name }}</p>
       <small>Available</small>
     </div>
 
@@ -81,30 +81,7 @@ export default {
   },
   methods: {
     logout () {
-
-      // if user is logged in via auth0
-      if (this.$auth.profile) this.$auth.logOut()
-
-      // if user is logged in via firebase
-      const firebaseCurrentUser = firebase.auth().currentUser
-
-      if (firebaseCurrentUser) {
-        firebase.auth().signOut().then(() => {
-          this.$router.push('/pages/login').catch(() => {})
-        })
-      }
-      // If JWT login
-      if (localStorage.getItem('accessToken')) {
-        localStorage.removeItem('accessToken')
-        this.$router.push('/pages/login').catch(() => {})
-      }
-
-      // Change role on logout. Same value as initialRole of acj.js
-      this.$acl.change('admin')
-      localStorage.removeItem('userInfo')
-
-      // This is just for demo Purpose. If user clicks on logout -> redirect
-      this.$router.push('/pages/login').catch(() => {})
+      this.$store.dispatch('auth/logoutJWT', {});
     }
   }
 }
