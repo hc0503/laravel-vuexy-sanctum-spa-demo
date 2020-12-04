@@ -2,7 +2,7 @@
   <div id="users-list">
     <div class="vx-row">
       <div class="vx-col w-full">
-        <vx-card title="Role List">
+        <vx-card title="User List">
           <div class="flex flex-wrap justify-end mb-2">
             <vs-button icon-pack="feather" icon="icon-plus" :to="{name: 'users-create'}">Add User</vs-button>
           </div>
@@ -36,7 +36,7 @@
                 </vs-td>
                 <vs-td :data="data[indextr].id">
                   <span>
-                    <vs-switch color="success" v-model="data[indextr].status">
+                    <vs-switch color="success" v-model="data[indextr].status" @input="changeStatus(data[indextr])">
                       <span slot="on">Enable</span>
                       <span slot="off">Disable</span>
                     </vs-switch>
@@ -77,6 +77,7 @@
 
 <script>
 import Button from "../components/vuesax/button/Button.vue"
+import axios from '../../axios.js'
 
 export default {
   data () {
@@ -92,8 +93,30 @@ export default {
   },
 
   methods: {
-    getUsers () {
-      this.$http.get('/api/users')
+    changeStatus (user) {
+      axios.post('/api/users/status/' + user.id, {
+        status: user.status
+      })
+        .then((response) => {
+          this.$vs.notify({
+            color: 'success',
+            title: 'Success',
+            text: 'The user status was successfully changed.',
+            position: 'top-right',
+          })
+        })
+        .catch((error) => {
+          this.$vs.notify({
+            title: 'Failed',
+            text: error.response.data.message,
+            position: 'top-right',
+            color: 'danger'
+          })
+        })
+    },
+
+    async getUsers () {
+      await axios.get('/api/users')
         .then((response) => {
           this.dispatchedUsers = response.data.data
         })
@@ -114,13 +137,14 @@ export default {
     },
 
     acceptAlert () {
-      this.$http.post('/api/users/delete/' + this.userId)
+      axios.post('/api/users/delete/' + this.userId)
         .then((response) => {
           if (response.data.success) {
             this.$vs.notify({
               color: 'success',
               title: 'Deleted role',
-              text: 'The selected role was successfully deleted.'
+              text: 'The selected role was successfully deleted.',
+              position: 'top-right',
             })
             this.getUsers()
           }

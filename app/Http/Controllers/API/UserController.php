@@ -49,7 +49,7 @@ class UserController extends Controller
             'status' => $request->status,
         ]);
         $user->assignRole($request->roles['name']);
-        
+        $user->givePermissionTo($request->permissions ?? []);
         return new UserResource($user);
     }
 
@@ -61,10 +61,30 @@ class UserController extends Controller
     public function postUpdate(Request $request, User $user)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:191'
+            'name' => 'required|string|max:255',
+            'email' => 'required|email:filter|max:255|unique:users,email,'.$user->id,
+            'confirm_password' => 'same:password'
         ]);
         $user->update([
-            'email' => $request->email
+            'email' => $request->email,
+            'name' => $request->name,
+            'password' => $request->password,
+            'status' => $request->status
+        ]);
+        $user->syncPermissions($request->permissions ?? []);
+
+        return new UserResource($user);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request  $request
+     * @param \App\Models\User  $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function postStatus(Request $request, User $user)
+    {
+        $user->update([
+            'status' => $request->status
         ]);
 
         return new UserResource($user);
