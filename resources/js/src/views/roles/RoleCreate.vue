@@ -69,8 +69,6 @@ export default {
         this.$vs.notify({
           title: 'Success',
           text: 'The role is stored successfully.',
-          iconPack: 'feather',
-          icon: 'icon-check',
           position: 'top-right',
           color: 'success'
         })
@@ -79,11 +77,17 @@ export default {
       })
       .catch(error => {
         this.$vs.loading.close()
+        for (let item in error.response.data.errors) {
+          this.errors.add({
+            scope: null,
+            field: item,
+            rule: 'required',
+            msg: error.response.data.errors[item][0]
+          })
+        }
         this.$vs.notify({
           title: 'Failed',
-          text: 'The create is failed.',
-          iconPack: 'feather',
-          icon: 'icon-check',
+          text: error.response.data.message,
           position: 'top-right',
           color: 'danger'
         })

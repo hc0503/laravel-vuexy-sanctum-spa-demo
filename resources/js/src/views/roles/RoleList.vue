@@ -107,7 +107,8 @@ export default {
             this.$vs.notify({
               color: 'success',
               title: 'Deleted role',
-              text: 'The selected role was successfully deleted.'
+              text: 'The selected role was successfully deleted.',
+              position: 'top-right',
             })
             this.getRoles()
           }

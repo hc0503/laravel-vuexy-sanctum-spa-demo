@@ -1,6 +1,6 @@
 <template>
-  <div id="roles-create">
-    <vx-card title="Create Role">
+  <div id="roles-edit">
+    <vx-card title="Edit Role">
       <div class="vx-col w-1/2">
         <vs-input class="w-1/2 mt-4"
           label="name"
@@ -10,21 +10,23 @@
           name="name" />
         <span class="text-danger text-sm">{{ errors.first('name') }}</span>
       </div>
-      <div class="vx-row mt-5">
+      <div class="vx-row mt-5 mb-0">
         <div class="vx-col w-full">
-          <div class="flex items-end px-3">
-            <feather-icon svgClasses="w-6 h-6" icon="LockIcon" class="mr-2" />
-            <span class="font-medium text-lg leading-none">Permissions</span>
+          <div class="flex items-end">
+            <feather-icon icon="LockIcon" class="mr-2" />
+            <span class="font-medium">Permissions</span>
           </div>
-          <vs-divider />
         </div>
       </div>
-        <div class="row">
-          <div v-for="permission in permissions" :key="permission.name" class="col w-1/4">
-            <input type="checkbox" :id="permission.name" :value="permission.name" v-model="selectedPermissions" @click="consoleVal">
-            <label :for="permission.name">{{permission.name}}</label>
-          </div>
+      <div class="vx-row">
+        <div class="vx-col w-full">
+          <ul class="demo-alignment">
+            <li v-for="permission in permissions" :key="permission.name">
+            <vs-checkbox v-model="selectedPermissions" :vs-value="permission.name">{{permission.name}}</vs-checkbox>
+            </li>
+          </ul>
         </div>
+      </div>
         <div class="flex flex-wrap justify-end mb-2">
           <vs-button icon-pack="feather" icon="icon-save" @click="updateRole">Update Role</vs-button>
         </div>
@@ -85,8 +87,6 @@ export default {
         this.$vs.notify({
           title: 'Success',
           text: 'The role is updated successfully.',
-          iconPack: 'feather',
-          icon: 'icon-check',
           position: 'top-right',
           color: 'success'
         })
@@ -94,11 +94,17 @@ export default {
       })
       .catch(error => {
         this.$vs.loading.close()
+        for (let item in error.response.data.errors) {
+          this.errors.add({
+            scope: null,
+            field: item,
+            rule: 'required',
+            msg: error.response.data.errors[item][0]
+          })
+        }
         this.$vs.notify({
           title: 'Failed',
-          text: 'The update is failed.',
-          iconPack: 'feather',
-          icon: 'icon-check',
+          text: error.response.data.message,
           position: 'top-right',
           color: 'danger'
         })
