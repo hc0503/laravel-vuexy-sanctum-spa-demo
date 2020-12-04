@@ -17,7 +17,7 @@
 
           <li
             class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
-            @click="$router.push('/pages/profile').catch(() => {})">
+            @click="$router.push('/profile').catch(() => {})">
             <feather-icon icon="UserIcon" svgClasses="w-4 h-4" />
             <span class="ml-2">Profile</span>
           </li>
@@ -67,6 +67,7 @@
 <script>
 import firebase from 'firebase/app'
 import 'firebase/auth'
+import axios from '../../../../axios.js'
 
 export default {
   data () {
@@ -80,8 +81,28 @@ export default {
     }
   },
   methods: {
-    logout () {
-      this.$store.dispatch('auth/logoutJWT', {});
+    async logout () {
+      await axios.get('/logout')
+        .then(response => {
+          localStorage.removeItem('userInfo')
+          this.$router.push('/pages/login').catch(() => {})
+          this.$vs.notify({
+            title: 'Success',
+            text: response.data.message,
+            color: 'success',
+            position: 'top-right'
+          })
+        })
+        .catch(error => {
+          this.$vs.notify({
+            title: 'Error',
+            text: error.response.data.message,
+            color: 'danger',
+            position: 'top-right'
+          })
+        })
+        localStorage.removeItem('userInfo')
+        this.$router.push('/pages/login').catch(() => {})
     }
   }
 }

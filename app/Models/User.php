@@ -47,7 +47,9 @@ class User extends Authenticatable
     /**
      * @param String  $pass
      */
-    public function setPasswordAttribute($pass){
+    public function setPasswordAttribute ($pass) {
+        if ($pass == '')
+            return;
         if (Hash::needsRehash($pass)) {
             $this->attributes['password'] = Hash::make($pass);
         }
