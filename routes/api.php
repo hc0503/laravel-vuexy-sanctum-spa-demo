@@ -13,16 +13,21 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/login', 'API\Auth\AuthController@login')->name('login');
-
-
-
-
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('logout', 'API\Auth\AuthController@getLogout');
+    Route::get('user', function (Request $request) {
+        return response()->json([
+            'userData' => $request->user()
+        ]);
+    });
+
     Route::get('permissions', 'API\PermissionController@getList');
 
+    Route::group(['prefix' => 'profile'], function () {
+        Route::get('/', 'API\ProfileController@getProfile');
+        Route::post('/update', 'API\ProfileController@postUpdate');
+    });
+    
     Route::group(['prefix' => 'roles'], function () {
         Route::get('/', 'API\RoleController@getList');
         Route::post('create', 'API\RoleController@postCreate');
@@ -37,5 +42,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('detail/{user}', 'API\UserController@getDetail')->middleware('permission:viewuser');
         Route::post('update/{user}', 'API\UserController@postUpdate')->middleware('permission:edituser');
         Route::post('delete/{user}', 'API\UserController@postDelete')->middleware('permission:deleteuser');
+        Route::post('status/{user}', 'API\UserController@postStatus')->middleware('permission:edituser');
     });
 });

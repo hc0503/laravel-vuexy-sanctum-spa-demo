@@ -305,33 +305,26 @@ export default {
     const { email, password, checkbox_remember_me } = payload.userDetails
 
     return new Promise((resolve, reject) => {
-      axios.post('/api/login', {
-        email: email,
-        password: password,
-        checkbox_remember_me: checkbox_remember_me
-      }).then(response => {
-
-          // If there's user data in response
-          if (response.data.userData) {
-            // Navigate User to homepage
-            router.push(router.currentRoute.query.to || '/')
-
-            // Set accessToken
-            localStorage.setItem('accessToken', response.data.accessToken)
-
-            // Update user details
-            commit('UPDATE_USER_INFO', response.data.userData, {root: true})
-
-            // Set bearer token in axios
-            commit('SET_BEARER', response.data.accessToken)
-
-            resolve(response)
-          } else {
-            reject({message: 'Wrong Email or Password'})
-          }
-
+      axios.get('/sanctum/csrf-cookie')
+        .then(async response => {
+          await axios.post('/login', {
+            email: email,
+            password: password,
+            checkbox_remember_me: checkbox_remember_me
+          })
+            .then(async response => {
+              await axios.get('/api/user')
+                .then((response) => {
+                  commit('UPDATE_USER_INFO', response.data.userData, {root: true})
+                  router.push(router.currentRoute.query.to || '/')
+                  resolve(response)
+                })
+                .catch((error) => {
+                  reject(error)
+                })
+            })
+            .catch(error => { reject(error) })
         })
-        .catch(error => { reject(error) })
     })
   },
   

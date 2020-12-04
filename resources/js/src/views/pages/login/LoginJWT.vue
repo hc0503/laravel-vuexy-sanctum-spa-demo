@@ -14,7 +14,7 @@
 
     <vs-input
         data-vv-validate-on="blur"
-        v-validate="'required|min:6|max:10'"
+        v-validate="'required|min:6'"
         type="password"
         name="password"
         icon-no-border
@@ -61,9 +61,8 @@ export default {
         this.$vs.notify({
           title: 'Login Attempt',
           text: 'You are already logged in!',
-          iconPack: 'feather',
-          icon: 'icon-alert-circle',
-          color: 'warning'
+          color: 'warning',
+          position: 'top-right'
         })
 
         return false
@@ -89,12 +88,19 @@ export default {
         .then(() => { this.$vs.loading.close() })
         .catch(error => {
           this.$vs.loading.close()
+          for (let item in error.response.data.errors) {
+            this.errors.add({
+              scope: null,
+              field: item,
+              rule: 'required',
+              msg: error.response.data.errors[item][0]
+            })
+          }
           this.$vs.notify({
             title: 'Error',
-            text: error.message,
-            iconPack: 'feather',
-            icon: 'icon-alert-circle',
-            color: 'danger'
+            text: error.response.message,
+            color: 'danger',
+            position: 'top-right'
           })
         })
     },
