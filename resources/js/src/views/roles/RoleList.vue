@@ -64,6 +64,7 @@
 
 <script>
 import Button from "../components/vuesax/button/Button.vue"
+import axios from '../../axios.js'
 
 export default {
   data () {
@@ -80,7 +81,7 @@ export default {
 
   methods: {
     getRoles () {
-      this.$http.get('/api/roles')
+      axios.get('/api/roles')
         .then((response) => {
           this.dispatchedRoles = response.data.data
         })
@@ -101,7 +102,7 @@ export default {
     },
 
     acceptAlert () {
-      this.$http.post('/api/roles/delete/' + this.roleId)
+      axios.post('/api/roles/delete/' + this.roleId)
         .then((response) => {
           if (response.data.success) {
             this.$vs.notify({

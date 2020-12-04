@@ -36,6 +36,8 @@
 
 <script>
 
+import axios from '../../axios.js'
+
 export default {
   data () {
     return {
@@ -56,7 +58,7 @@ export default {
 
   methods: {
     getDetail() {
-      this.$http.get('/api/roles/detail/' + this.$route.params.roleId)
+      axios.get('/api/roles/detail/' + this.$route.params.roleId)
         .then((response) => {
           this.selectedPermissions = response.data.data.permissions
           this.name = response.data.data.name
@@ -67,7 +69,7 @@ export default {
     },
 
     getPermission () {
-      this.$http.get('/api/permissions')
+      axios.get('/api/permissions')
         .then((response) => {
           this.permissions = response.data.data
         })
@@ -78,7 +80,7 @@ export default {
 
     updateRole () {
       this.$vs.loading()
-      this.$http.post('/api/roles/update/' + this.$route.params.roleId, {
+      axios.post('/api/roles/update/' + this.$route.params.roleId, {
         name: this.name,
         permissions: this.selectedPermissions
       })

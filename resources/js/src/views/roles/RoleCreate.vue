@@ -38,6 +38,8 @@
 
 <script>
 
+import axios from '../../axios.js'
+
 export default {
   data () {
     return {
@@ -48,7 +50,7 @@ export default {
   },
 
   created () {
-    this.$http.get('/api/permissions')
+    axios.get('/api/permissions')
       .then((response) => {
         this.permissions = response.data.data
       })
@@ -60,7 +62,7 @@ export default {
   methods: {
     saveRole () {
       this.$vs.loading()
-      this.$http.post('/api/roles/create', {
+      axios.post('/api/roles/create', {
         name: this.name,
         permissions: this.selectedPermissions
       })

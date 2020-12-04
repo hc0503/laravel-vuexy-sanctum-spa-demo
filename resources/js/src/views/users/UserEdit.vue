@@ -103,6 +103,7 @@
 
 <script>
 import vSelect from 'vue-select'
+import axios from '../../axios.js'
 
 export default {
   data () {
@@ -134,7 +135,7 @@ export default {
 
   methods: {
     getDetail() {
-      this.$http.get('/api/users/detail/' + this.$route.params.userId)
+      axios.get('/api/users/detail/' + this.$route.params.userId)
         .then((response) => {
           this.name = response.data.data.name
           this.email = response.data.data.email
@@ -147,7 +148,7 @@ export default {
         })
     },
     getRoles () {
-      this.$http.get('/api/roles')
+      axios.get('/api/roles')
         .then((response) => {
           this.roles = response.data.data
         })
@@ -157,7 +158,7 @@ export default {
     },
 
     getPermission () {
-      this.$http.get('/api/permissions')
+      axios.get('/api/permissions')
         .then((response) => {
           this.permissions = response.data.data
         })
@@ -168,7 +169,7 @@ export default {
 
     updateUser () {
       this.$vs.loading()
-      this.$http.post('/api/users/update/' + this.$route.params.userId, {
+      axios.post('/api/users/update/' + this.$route.params.userId, {
         name: this.name,
         password: this.password,
         confirm_password: this.confirmPassword,
