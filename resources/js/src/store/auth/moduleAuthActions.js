@@ -315,7 +315,7 @@ export default {
             .then(async response => {
               await axios.get('/api/user')
                 .then((response) => {
-                  commit('UPDATE_USER_INFO', response.data.userData, {root: true})
+                  commit('UPDATE_USER_INFO', response.data.data, {root: true})
                   router.push(router.currentRoute.query.to || '/')
                   resolve(response)
                 })
@@ -369,8 +369,7 @@ export default {
           router.push(router.currentRoute.query.to || '/')
 
           // Update data in localStorage
-          localStorage.setItem('accessToken', response.data.accessToken)
-          commit('UPDATE_USER_INFO', response.data.userData, {root: true})
+          commit('UPDATE_USER_INFO', response.data.data, {root: true})
 
           resolve(response)
         })

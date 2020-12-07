@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Resources\MeResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('user', function (Request $request) {
-        return response()->json([
-            'userData' => $request->user()
-        ]);
+        return new MeResource($request->user());
     });
 
     Route::get('permissions', 'API\PermissionController@getList');
