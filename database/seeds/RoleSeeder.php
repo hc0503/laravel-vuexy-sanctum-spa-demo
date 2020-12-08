@@ -15,13 +15,17 @@ class RoleSeeder extends Seeder
         Role::query()->truncate();
         Role::create([
             'name' => 'SuperAdmin',
-            // 'guard_name' => 'sanctum'
+            'guard_name' => 'web'
         ])
         ->givePermissionTo([
             'viewuser',
             'createuser',
             'edituser',
-            'deleteuser'
+            'deleteuser',
+            'viewrole',
+            'createrole',
+            'editrole',
+            'deleterole'
         ]);
     }
 }

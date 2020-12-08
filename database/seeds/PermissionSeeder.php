@@ -13,21 +13,16 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         Permission::query()->truncate();
-        Permission::create([
-            'name' => 'viewuser',
-            // 'guard_name' => 'sanctum'
-        ]);
-        Permission::create([
-            'name' => 'createuser',
-            // 'guard_name' => 'sanctum'
-        ]);
-        Permission::create([
-            'name' => 'edituser',
-            // 'guard_name' => 'sanctum'
-        ]);
-        Permission::create([
-            'name' => 'deleteuser',
-            // 'guard_name' => 'sanctum'
-        ]);
+        $permissions = [
+            ['name' => 'viewuser', 'guard_name' => 'web'],
+            ['name' => 'createuser', 'guard_name' => 'web'],
+            ['name' => 'edituser', 'guard_name' => 'web'],
+            ['name' => 'deleteuser', 'guard_name' => 'web'],
+            ['name' => 'viewrole', 'guard_name' => 'web'],
+            ['name' => 'createrole', 'guard_name' => 'web'],
+            ['name' => 'editrole', 'guard_name' => 'web'],
+            ['name' => 'deleterole', 'guard_name' => 'web'],
+        ];
+        Permission::insert($permissions);
     }
 }
