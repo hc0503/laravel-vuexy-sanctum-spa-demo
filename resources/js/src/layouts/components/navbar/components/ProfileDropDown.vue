@@ -84,11 +84,10 @@ export default {
     async logout () {
       await axios.get('/logout')
         .then(response => {
-          localStorage.removeItem('userInfo')
           this.$router.push('/pages/login').catch(() => {})
           this.$vs.notify({
             title: 'Success',
-            text: response.data.message,
+            text: 'You are logouted successfully.',
             color: 'success',
             position: 'top-right'
           })
@@ -101,7 +100,6 @@ export default {
             position: 'top-right'
           })
         })
-        localStorage.removeItem('userInfo')
         this.$router.push('/pages/login').catch(() => {})
     }
   }
