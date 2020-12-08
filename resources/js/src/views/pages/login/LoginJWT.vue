@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import { AbilityBuilder } from '@casl/ability';
+
 export default {
   data () {
     return {
@@ -87,6 +89,7 @@ export default {
       this.$store.dispatch('auth/loginJWT', payload)
         .then(() => {
           this.$vs.loading.close()
+          this.updateAbility()
         })
         .catch(error => {
           this.$vs.loading.close()
@@ -109,7 +112,20 @@ export default {
     registerUser () {
       if (!this.checkLogin()) return
       this.$router.push('/pages/register').catch(() => {})
+    },
+
+    updateAbility() {
+      const { can, rules } = new AbilityBuilder();
+      $userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      $permissions = $userInfo == null ? [] : $userInfo.permissions
+      for (const key in $permissions) {
+        const element = $permissions[key];
+        can(element);
+      }
+
+      this.$ability.update(rules);
     }
+
   }
 }
 

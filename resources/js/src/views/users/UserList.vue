@@ -87,6 +87,7 @@
 <script>
 import Button from "../components/vuesax/button/Button.vue"
 import axios from '../../axios.js'
+import defineAbilitiesFor  from '../../config/ability'
 
 export default {
   data () {

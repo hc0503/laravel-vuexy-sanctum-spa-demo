@@ -44,8 +44,10 @@ Vue.use(AuthPlugin)
 import acl from './acl/acl'
 
 // CASL
-import ability from './config/ability'
-Vue.prototype.$can = ability.can.bind(ability)
+import { abilitiesPlugin } from '@casl/vue';
+import ability from './config/ability';
+
+Vue.use(abilitiesPlugin, ability);
 
 // Globally Registered Components
 import './globalComponents.js'
