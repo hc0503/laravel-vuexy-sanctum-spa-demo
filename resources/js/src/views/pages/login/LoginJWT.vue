@@ -98,7 +98,7 @@ export default {
           }
           this.$vs.notify({
             title: 'Error',
-            text: error.response.message,
+            text: error.response.data.message,
             color: 'danger',
             position: 'top-right'
           })
