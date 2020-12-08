@@ -28,7 +28,14 @@
         </div>
       </div>
         <div class="flex flex-wrap justify-end mb-2">
-          <vs-button icon-pack="feather" icon="icon-save" @click="updateRole">Update Role</vs-button>
+          <vs-button
+            icon-pack="feather"
+            icon="icon-save"
+            @click="updateRole"
+            v-if="$can('editrole')"
+            >
+            Update Role
+          </vs-button>
         </div>
     </vx-card>
   </div>

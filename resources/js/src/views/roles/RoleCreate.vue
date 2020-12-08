@@ -30,7 +30,14 @@
         </div>
       </div>
         <div class="flex flex-wrap justify-end mb-2">
-          <vs-button icon-pack="feather" icon="icon-save" @click="saveRole">Save Role</vs-button>
+          <vs-button
+            icon-pack="feather"
+            icon="icon-save"
+            @click="saveRole"
+            v-if="$can('createrole')"
+            >
+            Save Role
+          </vs-button>
         </div>
     </vx-card>
   </div>

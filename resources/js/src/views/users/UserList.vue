@@ -4,7 +4,14 @@
       <div class="vx-col w-full">
         <vx-card title="User List">
           <div class="flex flex-wrap justify-end mb-2">
-            <vs-button icon-pack="feather" icon="icon-plus" :to="{name: 'users-create'}">Add User</vs-button>
+            <vs-button
+              icon-pack="feather"
+              icon="icon-plus"
+              :to="{name: 'users-create'}"
+              v-if="$can('createuser')"
+              >
+              Add User
+            </vs-button>
           </div>
           <vs-table :data="dispatchedUsers" class="table-dark-inverted">
             <template slot="thead">
@@ -54,16 +61,18 @@
                     color="primary"
                     type="border"
                     size="small"
+                    v-if="$can('edituser')"
                     >
-                  Edit
+                    Edit
                   </vs-button>
                   <vs-button
                     color="danger"
                     type="border"
                     size="small"
                     @click="openConfirm(data[indextr].id)"
+                    v-if="$can('deleteuser')"
                     >
-                  Delete
+                    Delete
                   </vs-button>
                 </vs-td>
               </vs-tr>

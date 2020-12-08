@@ -91,8 +91,9 @@
       <div class="vx-row mt-5">
         <div class="vx-col w-full text-right">
           <vs-button
-            @click="updateUser"  
-          >
+            @click="updateUser"
+            v-if="$can('edituser')"
+            >
             Update User
           </vs-button>
         </div>

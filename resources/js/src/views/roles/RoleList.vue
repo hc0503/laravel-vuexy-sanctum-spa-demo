@@ -4,7 +4,14 @@
       <div class="vx-col w-full">
         <vx-card title="Role List">
           <div class="flex flex-wrap justify-end mb-2">
-            <vs-button icon-pack="feather" icon="icon-plus" :to="{name: 'roles-create'}">Add Role</vs-button>
+            <vs-button
+              icon-pack="feather"
+              icon="icon-plus"
+              :to="{name: 'roles-create'}"
+              v-if="$can('createrole')"
+              >
+              Add Role
+            </vs-button>
           </div>
           <vs-table :data="dispatchedRoles" class="table-dark-inverted">
             <template slot="thead">
@@ -41,16 +48,18 @@
                     color="primary"
                     type="border"
                     size="small"
+                    v-if="$can('editrole')"
                     >
-                  Edit
+                    Edit
                   </vs-button>
                   <vs-button
                     color="danger"
                     type="border"
                     size="small"
                     @click="openConfirm(data[indextr].id)"
+                    v-if="$can('deleterole')"
                     >
-                  Delete
+                    Delete
                   </vs-button>
                 </vs-td>
               </vs-tr>

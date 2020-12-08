@@ -93,8 +93,9 @@
       <div class="vx-row mt-5">
         <div class="vx-col w-full text-right">
           <vs-button
-            @click="saveUser"  
-          >
+            @click="saveUser"
+            v-if="$can('createuser')"
+            >
             Save User
           </vs-button>
         </div>
