@@ -54,8 +54,10 @@ export default {
   },
   computed: {
     canSee () {
-      this.$acl.check(this.$store.state.AppActiveUser.userRole)
-      return this.to ? this.$acl.check(this.$router.match(this.to).meta.rule) : true
+      $permissions = JSON.parse(localStorage.getItem('userInfo')).permissions
+      if (this.to == null) return false;
+      return this.$router.match(this.to).meta.permission == '' || !this.$router.match(this.to).meta.permission ? true : $permissions.includes(this.$router.match(this.to).meta.permission)
+      return true;
     },
     activeLink () {
       return !!((this.to === this.$route.path || this.$route.meta.parent === this.slug) && this.to)

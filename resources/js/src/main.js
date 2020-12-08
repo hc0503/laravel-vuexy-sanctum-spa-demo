@@ -43,6 +43,9 @@ Vue.use(AuthPlugin)
 // ACL
 import acl from './acl/acl'
 
+// CASL
+import ability from './config/ability'
+Vue.prototype.$can = ability.can.bind(ability)
 
 // Globally Registered Components
 import './globalComponents.js'
@@ -116,5 +119,6 @@ new Vue({
   store,
   i18n,
   acl,
+  ability,
   render: h => h(App)
 }).$mount('#app')
