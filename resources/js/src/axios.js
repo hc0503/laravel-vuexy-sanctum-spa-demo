@@ -12,13 +12,14 @@ const instance = axios.create({
 
 instance.interceptors.response.use(
   response => {
-    return response;
+    return Promise.resolve(response);
   },
   error => {
     if (error.response.status === 401) {
       localStorage.removeItem('userInfo')
       router.push({ name: 'page-login' })
     }
+    return Promise.reject(error);
   })
 
 export default instance;
