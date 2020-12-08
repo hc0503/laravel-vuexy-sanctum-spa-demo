@@ -306,48 +306,45 @@ export default {
 
     return new Promise((resolve, reject) => {
       axios.get('/sanctum/csrf-cookie')
-        .then(async response => {
-          await axios.post('/login', {
+        .then(() => {
+          axios.post('/login', {
             email: email,
             password: password,
             checkbox_remember_me: checkbox_remember_me
+          }).then(response => {
+            axios.get('/api/user')
+              .then((response) => {
+                commit('UPDATE_USER_INFO', response.data.data, {root: true})
+                router.push(router.currentRoute.query.to || '/')
+                resolve(response)
+              })
+              .catch((error) => {
+                reject(error)
+              })
           })
-            .then(async response => {
-              await axios.get('/api/user')
-                .then((response) => {
-                  commit('UPDATE_USER_INFO', response.data.data, {root: true})
-                  router.push(router.currentRoute.query.to || '/')
-                  resolve(response)
-                })
-                .catch((error) => {
-                  reject(error)
-                })
-            })
-            .catch(error => { reject(error) })
+          .catch(error => { 
+            reject(error) 
+          })
         })
     })
   },
   
   logoutJWT ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      if (!localStorage.getItem(`accessToken`) || !localStorage.getItem(`userInfo`)) {
+      if (!localStorage.getItem(`userInfo`)) {
         window.localStorage.clear();
         return router.push({ name: `login` });
       }
-      console.log('CONSOLE')
       axios.get('/api/logout')
         .then(response => {
-          console.log('Success')
-            window.localStorage.clear()
-            router.push('/pages/login').catch(() => {})
-            console.log('Success')
-            resolve(response)
+          window.localStorage.clear()
+          router.push('/pages/login').catch(() => {})
+          resolve(response)
         })
         .catch(error => {
-            console.log('Failed')
-            window.localStorage.clear()
-            router.push('/pages/login').catch(() => {})
-            reject(error)
+          window.localStorage.clear()
+          router.push('/pages/login').catch(() => {})
+          reject(error)
         })
     })
   },
