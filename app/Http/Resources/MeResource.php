@@ -19,7 +19,7 @@ class MeResource extends JsonResource
         foreach ($this->roles->first()->permissions as $rolePermission) {
             array_push($arrPermissions, $rolePermission->name);
         }
-        $permissions = array_unique(array_merge($this->permissions->toArray(), $arrPermissions));
+        $permissions = array_unique(array_merge($this->permissions->pluck('name')->toArray(), $arrPermissions));
         
         return [
             'name' => $this->name,
