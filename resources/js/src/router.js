@@ -125,6 +125,7 @@ const router = new Router({
             pageTitle: 'Role List',
             middleware: auth,
             rule: 'editor',
+            permission: 'viewrole'
           },
         },
         {
@@ -170,6 +171,7 @@ const router = new Router({
             pageTitle: 'User List',
             middleware: auth,
             rule: 'editor',
+            permission: 'viewuser'
           },
         },
         {
